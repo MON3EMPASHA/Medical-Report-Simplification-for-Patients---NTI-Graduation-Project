@@ -55,6 +55,8 @@ python -m spacy download en_core_web_sm
 
 ## Installation
 
+### Local Development
+
 1. **Clone or download the project files**
 2. **Install dependencies**:
    ```bash
@@ -65,6 +67,28 @@ python -m spacy download en_core_web_sm
    python -m spacy download en_core_web_sm
    ```
 4. **Install Tesseract OCR** (see prerequisites above)
+
+### Streamlit Cloud Deployment
+
+The app is configured for easy deployment on Streamlit Cloud:
+
+1. **Fork this repository** to your GitHub account
+2. **Connect to Streamlit Cloud** and select your forked repository
+3. **Deploy** - the app will automatically:
+   - Install all dependencies from `requirements.txt`
+   - Attempt to install the spaCy English model on startup
+   - Work with or without spaCy (graceful fallback)
+
+#### Deployment Files
+
+- `requirements.txt` - Python dependencies
+- `.streamlit/config.toml` - Streamlit configuration
+- `.streamlit/secrets.toml` - Streamlit secrets (can be empty)
+- `setup.py` - Optional setup script
+
+#### Automatic spaCy Model Installation
+
+The app automatically attempts to install the spaCy English model when it starts up. If this fails, the app will continue to work with limited text preprocessing capabilities.
 
 ## Usage
 
@@ -177,6 +201,23 @@ def simplify_medical_report(text: str) -> str:
    ```bash
    pip install --upgrade -r requirements.txt
    ```
+
+### Streamlit Cloud Deployment Issues:
+
+1. **spaCy model installation fails**:
+
+   - The app automatically attempts to install the model on startup
+   - If it fails, the app will work with limited text preprocessing
+   - No manual intervention required
+
+2. **Requirements.txt errors**:
+
+   - Ensure `en-core-web-sm` is NOT in requirements.txt (it's not a PyPI package)
+   - The model is installed automatically by the app
+
+3. **Missing files**:
+   - Ensure `.streamlit/config.toml` exists
+   - Verify `.streamlit/secrets.toml` exists (can be empty)
 
 ## Future Enhancements
 
