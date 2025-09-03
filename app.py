@@ -9,6 +9,8 @@ import pytesseract
 from typing import Optional
 import tempfile
 import os
+import subprocess
+import sys
 
 # Page configuration
 st.set_page_config(
@@ -641,6 +643,22 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+def install_spacy_model():
+    """Install spaCy English model if not available"""
+    try:
+        with st.spinner("Installing spaCy English model..."):
+            result = subprocess.run([
+                sys.executable, "-m", "spacy", "download", "en_core_web_sm"
+            ], capture_output=True, text=True, check=True)
+            st.success("✅ spaCy English model installed successfully!")
+            return True
+    except subprocess.CalledProcessError as e:
+        st.error(f"❌ Error installing spaCy model: {e.stderr}")
+        return False
+    except Exception as e:
+        st.error(f"❌ Unexpected error: {e}")
+        return False
+
 @st.cache_resource
 def load_spacy_model():
     """Load spaCy model for text processing"""
@@ -649,8 +667,25 @@ def load_spacy_model():
         nlp = spacy.load("en_core_web_sm")
         return nlp
     except OSError:
-        st.error("spaCy English model not found. Please install it using: python -m spacy download en_core_web_sm")
-        return None
+        # Try to install the model automatically
+        if st.button("🔧 Install spaCy English Model", help="Click to automatically install the required spaCy model"):
+            if install_spacy_model():
+                st.rerun()  # Reload the app to try loading the model again
+            return None
+        else:
+            st.warning("""
+            **spaCy English model not found.** 
+            
+            Click the "Install spaCy English Model" button above to install it automatically.
+            
+            For manual installation:
+            ```
+            python -m spacy download en_core_web_sm
+            ```
+            
+            The app will continue to work without spaCy, but text preprocessing will be limited.
+            """)
+            return None
 
 def extract_text_from_image(image: Image.Image) -> str:
     """Extract text from image using OCR (Tesseract)"""
