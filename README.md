@@ -82,6 +82,7 @@ The app is configured for easy deployment on Streamlit Cloud:
 #### Deployment Files
 
 - `requirements.txt` - Python dependencies
+- `packages.txt` - System packages (Tesseract OCR)
 - `.streamlit/config.toml` - Streamlit configuration
 - `.streamlit/secrets.toml` - Streamlit secrets (can be empty)
 - `setup.py` - Optional setup script
@@ -216,8 +217,15 @@ def simplify_medical_report(text: str) -> str:
    - The model is installed automatically by the app
 
 3. **Missing files**:
+
    - Ensure `.streamlit/config.toml` exists
    - Verify `.streamlit/secrets.toml` exists (can be empty)
+   - Check that `packages.txt` contains `tesseract-ocr`
+
+4. **Tesseract OCR issues**:
+   - The app automatically installs Tesseract via `packages.txt`
+   - If OCR fails, use "Text Input" instead of "Image Upload"
+   - The app will show OCR availability status in the sidebar
 
 ## Future Enhancements
 

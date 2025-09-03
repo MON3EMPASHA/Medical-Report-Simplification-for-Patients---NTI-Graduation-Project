@@ -32,6 +32,19 @@ def ensure_spacy_model():
 if not ensure_spacy_model():
     st.warning("⚠️ spaCy English model installation failed. The app will work with limited text processing.")
 
+# Check Tesseract availability
+def check_tesseract():
+    """Check if Tesseract is available"""
+    try:
+        pytesseract.get_tesseract_version()
+        return True
+    except Exception:
+        return False
+
+# Store Tesseract availability in session state
+if 'tesseract_available' not in st.session_state:
+    st.session_state.tesseract_available = check_tesseract()
+
 # Page configuration
 st.set_page_config(
     page_title="Medical Report Simplification",
@@ -690,7 +703,22 @@ def extract_text_from_image(image: Image.Image) -> str:
         text = pytesseract.image_to_string(image, config='--psm 6')
         return text.strip()
     except Exception as e:
-        st.error(f"Error extracting text from image: {str(e)}")
+        error_msg = str(e)
+        if "tesseract is not installed" in error_msg.lower() or "tesseract" in error_msg.lower():
+            st.error("""
+            **Tesseract OCR is not available on this platform.**
+            
+            For Streamlit Cloud deployment, Tesseract should be automatically installed.
+            If you're seeing this error, please:
+            
+            1. **Restart the app** - Tesseract installation may take a moment
+            2. **Check if packages.txt contains `tesseract-ocr`**
+            3. **Try uploading a different image format**
+            
+            **Alternative**: Use the "Text Input" option instead of image upload.
+            """)
+        else:
+            st.error(f"Error extracting text from image: {error_msg}")
         return ""
 
 def preprocess_text(text: str, nlp) -> str:
@@ -737,18 +765,42 @@ def main():
     # Sidebar for input selection
     st.sidebar.markdown("## ⚙️ Input Options")
     st.sidebar.markdown("---")
+    
+    # Show Tesseract status
+    if st.session_state.tesseract_available:
+        st.sidebar.success("✅ OCR (Tesseract) is available")
+    else:
+        st.sidebar.warning("⚠️ OCR (Tesseract) not available")
+    
     input_type = st.sidebar.radio(
         "Choose input type:",
         ["📝 Text Input", "📷 Image Upload"],
         help="Select whether you want to input text directly or upload an image containing medical text"
     )
+    
+    # Show warning if Tesseract is not available and user selects image upload
+    if input_type == "📷 Image Upload" and not st.session_state.tesseract_available:
+        st.sidebar.error("""
+        **Image Upload Not Available**
+        
+        Tesseract OCR is not installed on this platform.
+        Please use "Text Input" instead.
+        """)
+    
     st.sidebar.markdown("---")
     st.sidebar.markdown("### 💡 Tips:")
-    st.sidebar.markdown("""
-    - **Text Input**: Best for digital reports
-    - **Image Upload**: For scanned documents or photos
-    - Ensure good image quality for better OCR results
-    """)
+    if st.session_state.tesseract_available:
+        st.sidebar.markdown("""
+        - **Text Input**: Best for digital reports
+        - **Image Upload**: For scanned documents or photos
+        - Ensure good image quality for better OCR results
+        """)
+    else:
+        st.sidebar.markdown("""
+        - **Text Input**: Recommended (OCR not available)
+        - **Image Upload**: Not available on this platform
+        - Copy and paste text from images manually
+        """)
     
     # Main content area
     col1, col2 = st.columns([1, 1])
@@ -769,12 +821,21 @@ def main():
             )
             
         else:  # Image Upload
-            st.markdown('<p style="color: #000000 !important;"><strong>Upload an image containing medical text:</strong></p>', unsafe_allow_html=True)
-            uploaded_file = st.file_uploader(
-                "Choose an image file",
-                type=['png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff'],
-                help="Upload an image file containing medical text. The app will extract text using OCR."
-            )
+            if st.session_state.tesseract_available:
+                st.markdown('<p style="color: #000000 !important;"><strong>Upload an image containing medical text:</strong></p>', unsafe_allow_html=True)
+                uploaded_file = st.file_uploader(
+                    "Choose an image file",
+                    type=['png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff'],
+                    help="Upload an image file containing medical text. The app will extract text using OCR."
+                )
+            else:
+                st.markdown('<p style="color: #000000 !important;"><strong>Image Upload Not Available</strong></p>', unsafe_allow_html=True)
+                st.info("""
+                **OCR (Tesseract) is not available on this platform.**
+                
+                Please use the "Text Input" option instead, or copy and paste text from your images manually.
+                """)
+                uploaded_file = None
             
             if uploaded_file is not None:
                 # Display the uploaded image
