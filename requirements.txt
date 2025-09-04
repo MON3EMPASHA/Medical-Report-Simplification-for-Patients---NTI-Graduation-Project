@@ -1,19 +1,18 @@
 # Core Streamlit and UI
-streamlit==1.45.1
-streamlit_mic_recorder==0.0.8
+streamlit>=1.28.0
 
 # Data processing and analysis
-pandas==2.2.2
-numpy==2.3.2
+pandas>=1.5.0
+numpy>=1.24.0
 
 # Image processing and OCR
-Pillow==11.2.1
-pytesseract==0.3.13
+Pillow>=9.5.0
+pytesseract>=0.3.10
 
 # Natural Language Processing
 spacy>=3.6.0
 
-# Deep Learning and AI
+# Deep Learning and AI (flexible versions for compatibility)
 torch>=2.0.0
 transformers>=4.30.0
 peft>=0.4.0
