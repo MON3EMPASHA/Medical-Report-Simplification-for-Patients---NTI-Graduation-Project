@@ -801,7 +801,7 @@ def load_medical_model():
             # Load base model
             base_model = AutoModelForSeq2SeqLM.from_pretrained(
                 "google/flan-t5-base",
-                torch_dtype=torch.float16,
+                dtype=torch.float16,
                 device_map="auto"
             )
             
@@ -880,7 +880,7 @@ def load_medical_model():
             st.info("💡 Loading base model as fallback - will still provide medical text simplification")
             model = AutoModelForSeq2SeqLM.from_pretrained(
                 "google/flan-t5-base",
-                torch_dtype=torch.float16,
+                dtype=torch.float16,
                 device_map="auto"
             )
             model.eval()
