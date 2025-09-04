@@ -1,24 +1,13 @@
-# Core Streamlit and UI
-streamlit>=1.28.0
-
-# Data processing and analysis
-pandas>=1.5.0
-numpy>=1.24.0
-
-# Image processing and OCR
-Pillow>=9.5.0
-pytesseract>=0.3.10
-
-# Natural Language Processing
-spacy>=3.6.0
-
-# Deep Learning and AI (flexible versions for compatibility)
-torch>=2.0.0
-transformers>=4.30.0
-peft>=0.4.0
-accelerate>=0.20.0
-safetensors>=0.3.0
-
-# Additional dependencies for model loading and inference
-huggingface-hub>=0.20.0
-tokenizers>=0.15.0
+streamlit
+pandas
+numpy
+Pillow
+pytesseract
+spacy
+torch
+transformers
+peft
+accelerate
+safetensors
+huggingface-hub
+tokenizers

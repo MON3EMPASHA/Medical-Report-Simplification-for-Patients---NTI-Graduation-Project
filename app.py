@@ -1,21 +1,39 @@
 import streamlit as st
-import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 from PIL import Image
 import io
 import base64
-import spacy
-import pytesseract
-from typing import Optional
 import tempfile
 import os
-import torch
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from typing import Optional
+
+# Optional imports with graceful fallbacks
+try:
+    import spacy
+    SPACY_AVAILABLE = True
+except ImportError:
+    SPACY_AVAILABLE = False
+
+try:
+    import pytesseract
+    TESSERACT_AVAILABLE = True
+except ImportError:
+    TESSERACT_AVAILABLE = False
+
+try:
+    import torch
+    from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+    TORCH_AVAILABLE = True
+except ImportError:
+    TORCH_AVAILABLE = False
 
 # Check spaCy model availability with automatic installation attempt
 def check_spacy_model():
     """Check if spaCy English model is available, attempt installation if not"""
+    if not SPACY_AVAILABLE:
+        return False
+    
     try:
         spacy.load("en_core_web_sm")
         return True
@@ -32,6 +50,9 @@ def check_spacy_model():
 # Check Tesseract availability
 def check_tesseract():
     """Check if Tesseract is available"""
+    if not TESSERACT_AVAILABLE:
+        return False
+    
     try:
         pytesseract.get_tesseract_version()
         return True
@@ -721,6 +742,10 @@ def load_spacy_model():
 @st.cache_resource
 def load_medical_model():
     """Load the trained medical simplification model"""
+    if not TORCH_AVAILABLE:
+        st.warning("⚠️ PyTorch and Transformers not available. Model loading disabled.")
+        return None, None
+    
     import os  # Import os at the top of the function
     try:
         # Check if the model directory exists
@@ -837,6 +862,9 @@ def load_medical_model():
 
 def extract_text_from_image(image: Image.Image) -> str:
     """Extract text from image using OCR (Tesseract)"""
+    if not TESSERACT_AVAILABLE:
+        return "Error: Tesseract OCR not available. Please install tesseract-ocr system package."
+    
     try:
         # Convert PIL image to format suitable for Tesseract
         text = pytesseract.image_to_string(image, config='--psm 6')
@@ -950,6 +978,16 @@ def main():
     # Header
     st.markdown('<h1 class="main-header">🏥 Medical Report Simplification</h1>', unsafe_allow_html=True)
     st.markdown('<p class="subtitle">Transform complex medical reports into patient-friendly language</p>', unsafe_allow_html=True)
+    
+    # Check dependencies
+    if not TORCH_AVAILABLE:
+        st.error("⚠️ **PyTorch and Transformers not available.** The AI model functionality will be disabled. Please ensure all dependencies are installed.")
+    
+    if not TESSERACT_AVAILABLE:
+        st.warning("⚠️ **Tesseract OCR not available.** Image upload functionality will be limited.")
+    
+    if not SPACY_AVAILABLE:
+        st.warning("⚠️ **spaCy not available.** Text preprocessing will be limited.")
     
     # Load models
     nlp = load_spacy_model()
@@ -1137,12 +1175,12 @@ STATISTICS:
 ORIGINAL TEXT:
 {simplified_report['original_text']}
 """
-                        st.download_button(
-                            label="📥 Download Simplified Report",
+                    st.download_button(
+                        label="📥 Download Simplified Report",
                             data=download_text,
-                            file_name="simplified_medical_report.txt",
-                            mime="text/plain"
-                        )
+                        file_name="simplified_medical_report.txt",
+                        mime="text/plain"
+                    )
             else:
                 st.warning("Please provide some text to process.")
     
