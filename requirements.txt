@@ -1,6 +1,30 @@
-streamlit>=1.28.0
-pandas>=1.5.0
-numpy>=1.24.0
-Pillow>=9.5.0
-spacy>=3.6.0
-pytesseract>=0.3.10
+# Core Streamlit and UI
+streamlit==1.45.1
+streamlit_mic_recorder==0.0.8
+
+# Data processing and analysis
+pandas==2.2.2
+numpy==2.3.2
+
+# Image processing and OCR
+Pillow==11.2.1
+pytesseract==0.3.13
+
+# Natural Language Processing
+spacy==3.8.7
+spacy-legacy==3.0.12
+spacy-loggers==1.0.5
+
+# Deep Learning and AI
+torch==2.8.0
+torchaudio==2.6.0
+torchvision==0.21.0
+transformers==4.36.2
+peft==0.4.0
+accelerate==1.10.1
+bitsandbytes==0.39.0
+safetensors==0.6.2
+
+# Additional dependencies for model loading and inference
+huggingface-hub>=0.20.0
+tokenizers>=0.15.0

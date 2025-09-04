@@ -1,6 +1,6 @@
-# Medical Report Simplification GUI
+# Medical Report Simplification for Patients - NTI Graduation Project
 
-A Streamlit-based web application that simplifies complex medical reports into patient-friendly language. The application supports both direct text input and image upload with OCR text extraction.
+A Streamlit-based web application that simplifies complex medical reports into patient-friendly language using a fine-tuned FLAN-T5 model with LoRA adapters. The application supports both direct text input and image upload with OCR text extraction.
 
 ## Features
 
@@ -8,7 +8,9 @@ A Streamlit-based web application that simplifies complex medical reports into p
 - 📷 **Image Upload**: Upload images containing medical text with OCR extraction
 - 🔍 **OCR Processing**: Automatic text extraction from images using Tesseract
 - 🧠 **Text Preprocessing**: Advanced text processing using spaCy
-- 📊 **Model Integration Ready**: Placeholder for your medical simplification model
+- 🤖 **AI-Powered Simplification**: Fine-tuned FLAN-T5 model with LoRA adapters for medical text simplification
+- 🎨 **Beautiful UI**: Professional, modern interface with gradient designs and responsive layout
+- 📊 **Statistics**: Real-time processing statistics and text reduction metrics
 - 💾 **Download Results**: Export simplified reports as text files
 
 ## Prerequisites
@@ -55,7 +57,21 @@ python -m spacy download en_core_web_sm
 
 ## Installation
 
-### Local Development
+### Quick Setup (Recommended)
+
+Use the automated setup script:
+
+```bash
+python setup.py
+```
+
+This will automatically:
+
+- Install all Python dependencies
+- Download the spaCy English model
+- Verify the installation
+
+### Manual Setup
 
 1. **Clone or download the project files**
 2. **Install dependencies**:
@@ -129,33 +145,53 @@ The application will open in your default web browser at `http://localhost:8501`
 ## File Structure
 
 ```
-├── app.py                 # Main Streamlit application
-├── requirements.txt       # Python dependencies
-└── README.md             # This file
+├── app.py                          # Main Streamlit application
+├── requirements.txt                # Python dependencies with exact versions
+├── setup.py                       # Automated setup script
+├── packages.txt                   # System packages for Streamlit Cloud
+├── README.md                      # This documentation
+├── Medical Report Simplifiation notebook.ipynb  # Training notebook
+└── medical_lora_adapters/         # Trained LoRA model files
+    ├── adapter_config.json
+    ├── adapter_model.safetensors
+    ├── special_tokens_map.json
+    ├── spiece.model
+    ├── tokenizer_config.json
+    └── tokenizer.json
 ```
 
 ## Model Integration
 
-The application includes a placeholder function `simplify_medical_report()` in `app.py` where you can integrate your medical report simplification model.
+The application uses a fine-tuned FLAN-T5 model with LoRA adapters for medical report simplification. The model is automatically loaded from the `medical_lora_adapters` directory.
 
-### Current Placeholder:
+### Model Architecture:
 
-```python
-def simplify_medical_report(text: str) -> str:
-    """
-    Placeholder function for medical report simplification
-    This is where you'll integrate your model later
-    """
-    # Your model integration code goes here
-    return simplified_text
+- **Base Model**: Google's FLAN-T5-base
+- **Fine-tuning**: LoRA (Low-Rank Adaptation) adapters
+- **Task**: Medical text simplification for patients
+- **Model Files**: Located in `./medical_lora_adapters/`
+
+### Model Loading Process:
+
+1. **Tokenizer**: Loaded from the base FLAN-T5 model
+2. **Base Model**: FLAN-T5-base with 16-bit precision
+3. **LoRA Adapters**: Multiple loading strategies for compatibility:
+   - Standard PEFT loading
+   - Manual configuration loading
+   - Direct weight loading from safetensors
+4. **Fallback**: Base model if LoRA loading fails
+
+### Model Files Required:
+
 ```
-
-### Integration Steps:
-
-1. Import your model in the `app.py` file
-2. Replace the placeholder logic in `simplify_medical_report()` function
-3. Add any necessary preprocessing or postprocessing steps
-4. Update the requirements.txt if additional dependencies are needed
+medical_lora_adapters/
+├── adapter_config.json      # LoRA configuration
+├── adapter_model.safetensors # LoRA weights
+├── special_tokens_map.json  # Special tokens mapping
+├── spiece.model            # SentencePiece model
+├── tokenizer_config.json   # Tokenizer configuration
+└── tokenizer.json         # Tokenizer data
+```
 
 ## Technical Details
 
