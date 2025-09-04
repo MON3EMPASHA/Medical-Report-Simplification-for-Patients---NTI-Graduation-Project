@@ -67,7 +67,7 @@ if 'tesseract_available' not in st.session_state:
 st.set_page_config(
     page_title="Medical Report Simplification",
     page_icon="🏥",
-    layout="centered",
+    layout="wide",
     initial_sidebar_state="expanded"
 )
 
@@ -721,11 +721,41 @@ st.markdown("""
         background-color: #ffffff;
     }
     
+    /* Ensure sidebar is visible on Streamlit Cloud */
+    .css-1d391kg {
+        display: block !important;
+        visibility: visible !important;
+    }
+    
+    .css-1lcbmhc {
+        display: block !important;
+        visibility: visible !important;
+    }
+    
+    section[data-testid="stSidebar"] {
+        display: block !important;
+        visibility: visible !important;
+    }
+    
     /* Hide Streamlit branding */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
 </style>
+
+<script>
+// Force sidebar to be visible on Streamlit Cloud
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        const sidebar = document.querySelector('section[data-testid="stSidebar"]');
+        if (sidebar) {
+            sidebar.style.display = 'block';
+            sidebar.style.visibility = 'visible';
+            sidebar.style.width = '21rem';
+        }
+    }, 1000);
+});
+</script>
 """, unsafe_allow_html=True)
 
 @st.cache_resource
@@ -1002,6 +1032,20 @@ def main():
         ["📝 Text Input", "📷 Image Upload"],
         help="Select whether you want to input text directly or upload an image containing medical text"
     )
+    
+    # Fallback: Also show input selection in main area if sidebar is not visible
+    st.markdown("---")
+    st.markdown("### 📋 Input Selection")
+    input_type_main = st.radio(
+        "Choose input type:",
+        ["📝 Text Input", "📷 Image Upload"],
+        help="Select whether you want to input text directly or upload an image containing medical text",
+        key="input_type_main"
+    )
+    
+    # Use the main area selection if sidebar is not working
+    if input_type_main != input_type:
+        input_type = input_type_main
     
     if input_type == "📷 Image Upload" and not st.session_state.tesseract_available:
         st.sidebar.error("""
