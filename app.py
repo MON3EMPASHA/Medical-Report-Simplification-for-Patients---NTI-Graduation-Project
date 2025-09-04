@@ -67,7 +67,7 @@ if 'tesseract_available' not in st.session_state:
 st.set_page_config(
     page_title="Medical Report Simplification",
     page_icon="🏥",
-    layout="wide",
+    layout="centered",
     initial_sidebar_state="expanded"
 )
 
