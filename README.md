@@ -89,11 +89,15 @@ This will automatically:
 The app is configured for easy deployment on Streamlit Cloud:
 
 1. **Fork this repository** to your GitHub account
-2. **Connect to Streamlit Cloud** and select your forked repository
-3. **Deploy** - the app will automatically:
+2. **Go to [Streamlit Cloud](https://share.streamlit.io/)** and click "New app"
+3. **Select your forked repository** and set main file to `app.py`
+4. **Deploy** - the app will automatically:
    - Install all dependencies from `requirements.txt`
-   - Attempt to install the spaCy English model on startup
+   - Install Tesseract OCR from `packages.txt`
+   - Download the spaCy English model on first run
    - Work with or without spaCy (graceful fallback)
+
+📖 **Detailed deployment guide**: See [DEPLOYMENT.md](DEPLOYMENT.md)
 
 #### Deployment Files
 

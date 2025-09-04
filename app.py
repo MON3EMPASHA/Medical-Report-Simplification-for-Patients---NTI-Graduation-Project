@@ -13,14 +13,21 @@ import os
 import torch
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-# Check spaCy model availability (no installation attempt)
+# Check spaCy model availability with automatic installation attempt
 def check_spacy_model():
-    """Check if spaCy English model is available"""
+    """Check if spaCy English model is available, attempt installation if not"""
     try:
         spacy.load("en_core_web_sm")
         return True
     except OSError:
-        return False
+        try:
+            # Attempt to download the model
+            import subprocess
+            import sys
+            subprocess.check_call([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
+            return True
+        except Exception:
+            return False
 
 # Check Tesseract availability
 def check_tesseract():
