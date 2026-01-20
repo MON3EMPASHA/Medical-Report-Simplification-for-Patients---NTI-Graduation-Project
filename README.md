@@ -218,64 +218,6 @@ medical_lora_adapters/
 - Real-time processing indicators
 - Download functionality for results
 
-## Troubleshooting
-
-### Common Issues:
-
-1. **spaCy model not found**:
-
-   ```bash
-   python -m spacy download en_core_web_sm
-   ```
-
-2. **Tesseract not found**:
-
-   - Ensure Tesseract is installed and in your system PATH
-   - On Windows, you may need to set the path manually
-
-3. **Image upload issues**:
-
-   - Check that the image file is in a supported format
-   - Ensure the image contains readable text
-
-4. **Dependencies issues**:
-   ```bash
-   pip install --upgrade -r requirements.txt
-   ```
-
-### Streamlit Cloud Deployment Issues:
-
-1. **spaCy model installation fails**:
-
-   - The app automatically attempts to install the model on startup
-   - If it fails, the app will work with limited text preprocessing
-   - No manual intervention required
-
-2. **Requirements.txt errors**:
-
-   - Ensure `en-core-web-sm` is NOT in requirements.txt (it's not a PyPI package)
-   - The model is installed automatically by the app
-
-3. **Missing files**:
-
-   - Ensure `.streamlit/config.toml` exists
-   - Verify `.streamlit/secrets.toml` exists (can be empty)
-   - Check that `packages.txt` contains `tesseract-ocr`
-
-4. **Tesseract OCR issues**:
-   - The app automatically installs Tesseract via `packages.txt`
-   - If OCR fails, use "Text Input" instead of "Image Upload"
-   - The app will show OCR availability status in the sidebar
-
-## Future Enhancements
-
-- [ ] Integration with medical NLP models
-- [ ] Batch processing capabilities
-- [ ] Multiple language support
-- [ ] Advanced OCR preprocessing
-- [ ] User authentication and history
-- [ ] API endpoint for programmatic access
-
 ## Contributing
 
 This is a graduation project for NTI. For contributions or suggestions, please contact the project maintainer.
@@ -283,3 +225,4 @@ This is a graduation project for NTI. For contributions or suggestions, please c
 ## License
 
 This project is part of an NTI graduation project for medical report simplification.
+
