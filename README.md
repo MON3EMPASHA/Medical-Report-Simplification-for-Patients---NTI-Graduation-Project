@@ -1,6 +1,6 @@
 # Medical Report Simplification for Patients
 
-**NTI Graduation Project**
+**NTI Internship Graduation Project**
 
 A Streamlit-based web application that simplifies complex medical reports into clear, patient-friendly language using a fine-tuned **FLAN-T5** model with **LoRA adapters**. The app supports both text input and image upload with OCR extraction.
 
@@ -89,3 +89,4 @@ streamlit run app.py
 
 * Make a **shorter version** for portfolio use
 * Add **badges** (Python, Streamlit, NLP, AI)
+
